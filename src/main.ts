@@ -11,6 +11,8 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      // transform: true,
+      stopAtFirstError: true,
     }),
   );
   app.setGlobalPrefix('api/v1', { exclude: ['/'] });
