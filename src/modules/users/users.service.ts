@@ -11,12 +11,12 @@ import { QueryUserDto } from './dto/query-user.dto';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  isEmailExist = async (email: string): Promise<boolean> => {
+  async isEmailExist(email: string): Promise<boolean> {
     const checkEmail = await this.userModel.exists({ email });
     if (checkEmail) return true;
     return false;
-  };
-  async create(createUserDto) {
+  }
+  async create(createUserDto:CreateUserDto) {
     const { name, email, password, phone, address, image } = createUserDto;
     // hash password
     const hashPassword: string = await hashPasswordHelper(password);
@@ -39,15 +39,20 @@ export class UsersService {
     };
   }
 
+  
   async findAll(query: any) {
     const { limit, skip, sort, filter } = parseQueryParams(query);
-    const results = await this.userModel.find(filter).limit(limit).skip(skip).sort(sort);
+    const results = await this.userModel
+      .find(filter)
+      .limit(limit)
+      .skip(skip)
+      .sort(sort);
     console.log('results', results);
     return results;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findByUser(email: string) {
+    return this.userModel.findOne({email})
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

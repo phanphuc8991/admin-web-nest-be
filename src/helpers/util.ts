@@ -7,7 +7,7 @@ interface ParseQueryParams {
   skip: number;
   filter: Record<string, any>;
   sort: Record<string, any>;
-};
+}
 
 export const hashPasswordHelper = async (
   plainPassword: string,
@@ -17,6 +17,14 @@ export const hashPasswordHelper = async (
   } catch (error) {
     console.log(error);
   }
+};
+
+export const checkUser = async (
+  password: string,
+  hashPassword: string,
+): Promise<any> => {
+  const match = bcrypt.compare(password, hashPassword);
+  return match;
 };
 
 export const parseQueryParams = (rawQuery: any): ParseQueryParams => {

@@ -13,6 +13,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
 
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -21,6 +22,7 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+
 
   @Get()
   // `query` → validated DTO (pagination & basic fields)
@@ -31,7 +33,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Query('id') id: string) {
-    return this.usersService.findOne(+id);
+    return ''
   }
 
   @Patch(':id')
