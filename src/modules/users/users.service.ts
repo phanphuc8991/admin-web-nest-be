@@ -47,7 +47,7 @@ export class UsersService {
       .limit(limit)
       .skip(skip)
       .sort(sort);
-    console.log('results', results);
+      
     return results;
   }
 

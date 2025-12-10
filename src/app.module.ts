@@ -4,12 +4,12 @@ import { AppService } from './app.service';
 import { UsersModule } from '@/modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from '@/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from '@/auth/auth.guard';
-
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
@@ -19,14 +19,13 @@ import { AuthGuard } from '@/auth/auth.guard';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
-      useExisting: AuthGuard,
+      useClass: JwtAuthGuard,
     },
   ],
 })
