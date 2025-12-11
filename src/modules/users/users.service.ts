@@ -5,8 +5,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { hashPasswordHelper, parseQueryParams } from '@/helpers/util';
-import { QueryUserDto } from './dto/query-user.dto';
-
+import { CreateAuthDto } from '@/auth/dto/create-auth.dto';
+import { v4 as uuidv4 } from 'uuid';
+const dayjs = require('dayjs')
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
@@ -20,6 +21,7 @@ export class UsersService {
     const { name, email, password, phone, address, image } = createUserDto;
     // hash password
     const hashPassword: string = await hashPasswordHelper(password);
+
     // check email exist
     if (await this.isEmailExist(email)) {
       throw new BadRequestException(
@@ -62,4 +64,34 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+  async handleRegister(registerDto: CreateAuthDto) {
+
+
+    const {email, password, name} = registerDto;
+
+      // check email exist
+    if (await this.isEmailExist(email)) {
+      throw new BadRequestException(
+        `Email exist: ${email} Please use different email`,
+      );
+    }
+
+    // hash password
+    const hashPassword: string = await hashPasswordHelper(password);
+     const user = await this.userModel.create({
+      name,
+      email,
+      password: hashPassword,
+      isActive: false,
+      codeId: uuidv4(),
+      codeExpired: dayjs().add(1, 'minutes')
+    });
+    
+    return {
+      _id: user['_id'],
+    }
+  }
+
+  // send email
 }
