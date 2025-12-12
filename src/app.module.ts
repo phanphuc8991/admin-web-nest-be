@@ -32,7 +32,7 @@ import { join } from 'path';
 
         template: {
           dir: join(__dirname, 'mail/templates'),
-          adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
+          adapter: new HandlebarsAdapter(), 
           options: {
             strict: true,
           },

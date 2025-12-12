@@ -7,10 +7,11 @@ import { Model } from 'mongoose';
 import { hashPasswordHelper, parseQueryParams } from '@/helpers/util';
 import { CreateAuthDto } from '@/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { MailerService } from '@nestjs-modules/mailer';
 const dayjs = require('dayjs')
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>, private mailerService: MailerService) {}
 
   async isEmailExist(email: string): Promise<boolean> {
     const checkEmail = await this.userModel.exists({ email });
@@ -77,17 +78,30 @@ export class UsersService {
       );
     }
 
+
     // hash password
     const hashPassword: string = await hashPasswordHelper(password);
+    const codeId = uuidv4();
      const user = await this.userModel.create({
       name,
       email,
       password: hashPassword,
       isActive: false,
-      codeId: uuidv4(),
+      codeId,
       codeExpired: dayjs().add(1, 'minutes')
     });
-    
+
+    // send email 
+    await this.mailerService
+      .sendMail({
+        to: user.email, // list of receivers
+        subject: 'Welcome to nest js', // Subject line
+        template: 'register.hbs',
+        context: {
+          name: user.name ||  user.email,
+          activationCode: codeId,
+        }
+      });
     return {
       _id: user['_id'],
     }

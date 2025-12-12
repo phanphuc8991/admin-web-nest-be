@@ -33,19 +33,15 @@ export class AuthController {
   testMail() {
     this.mailerService
       .sendMail({
-        to: 'phanhoangphuc123321@gmail.com', // list of receivers
-        // from: 'noreply@nestjs.com', // sender address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
+        to: 'phanhoangphuc123321@gmail.com', 
+        subject: 'Testing Nest MailerModule ✔', 
+        text: 'welcome', 
         template: 'register.hbs',
         context: {
           name: 'nestjs',
           activationCode: '1234324fd'
         }
-      })
-      .then().catch(error => {
-        console.log('error', error);
-      })
+      });
      return 'ok';
   }
 }
