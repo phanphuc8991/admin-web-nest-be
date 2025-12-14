@@ -23,6 +23,7 @@ export const checkUser = async (
   password: string,
   hashPassword: string,
 ): Promise<any> => {
+   if(!password || !hashPassword) return false;
   const match = bcrypt.compare(password, hashPassword);
   return match;
 };
