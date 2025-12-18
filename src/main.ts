@@ -15,6 +15,7 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
+  app.enableCors();
   app.setGlobalPrefix('api/v1', { exclude: ['/'] });
 
   await app.listen(port);
